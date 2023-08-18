@@ -1,0 +1,68 @@
+{
+    "name": "escalationExtn",
+    "version": "1.0.0",
+    "description": "A simple CAP project.",
+    "repository": "<Add your repository here>",
+    "license": "UNLICENSED",
+    "private": true,
+    "dependencies": {
+        "@sap-cloud-sdk/http-client": "^3.4.0",
+        "@sap/cds": "^7.1.2",
+        "@sap/cds-hana": "^2",
+        "@sap/xssec": "^3.3.3",
+        "express": "^4",
+        "npm": "^9.8.0",
+        "passport": "^0.6.0"
+    },
+    "devDependencies": {
+        "@cap-js/sqlite": "^1",
+        "@sap/cds-dk": "^7",
+        "@sap/ux-specification": "^1.108.11",
+        "axios": "^1.4.0",
+        "chai": "^4.3.7",
+        "chai-as-promised": "^7.1.1",
+        "chai-subset": "^1.6.0",
+        "jest": "^29.6.2",
+        "rimraf": "^3.0.2"
+    },
+    "scripts": {
+        "start": "cds-serve",
+        "watch-escalationsfe": "cds watch --open escalationsfe/webapp/index.html?sap-ui-xx-viewCache=false",
+        "undeploy": "cf undeploy escalationExtn --delete-services --delete-service-keys --delete-service-brokers",
+        "build": "rimraf resources mta_archives && mbt build --mtar archive",
+        "deploy": "cf deploy mta_archives/archive.mtar --retries 1",
+        "test": "npx jest"
+    },
+    "cds": {
+        "requires": {
+            "db": "hana",
+            "API_PURCHASEORDER_PROCESS_SRV": {
+                "kind": "odata-v2",
+                "model": "srv/external/API_PURCHASEORDER_PROCESS_SRV",
+                "credentials": {
+                    "[development]": {
+                        "destination": {
+                            "url": "https://sandbox.api.sap.com/s4hanacloud/sap/opu/odata/sap/API_PURCHASEORDER_PROCESS_SRV",
+                            "headers": {
+                                "apiKey": "0nIQKbsSlUJ5s1YaW4qO9MsCRoJ7sQJx"
+                            }
+                        }
+                    },
+                    "destination": "SandBoxPO"
+                }
+            },
+            "auth": {
+                "[development]": {
+                    "kind": "dummy-auth"
+                },
+                "kind": "xsuaa"
+            }
+        }
+    },
+    "hana": {
+        "deploy-format": "hdbtable"
+    },
+    "sapux": [
+        "app/escalationsfe"
+    ]
+}
